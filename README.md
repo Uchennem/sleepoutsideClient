@@ -1,4 +1,4 @@
-# Sleepoutside - Fronend starter code
+# Sleepoutside - Frontend starter code
 
 ## Description
 
