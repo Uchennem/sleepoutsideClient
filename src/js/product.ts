@@ -1,9 +1,11 @@
 import type { Product } from "./types.mts";
-import { setLocalStorage } from "./utils.mts";
+import { setLocalStorage, getLocalStorage } from "./utils.mts";
 import { findProductById } from "./productData.mts";
 
 function addProductToCart(product: Product) {
-  setLocalStorage("so-cart", product);
+  const cart = getLocalStorage("so-cart");
+  cart.push(product);
+  setLocalStorage("so-cart", cart);
 }
 // add to cart button event handler
 async function addToCartHandler(e: Event) {
