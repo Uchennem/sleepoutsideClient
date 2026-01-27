@@ -1,0 +1,62 @@
+Orders:
+_id:
+    string,
+    required
+user_id:
+    string,
+    required
+status: {
+    IsPaid: Boolean,
+    IsShipped: Boolean
+}
+shipping_address: {
+    string,
+    required
+}
+Items: []
+total:
+    number,
+    required
+createdAt:
+    date,
+    required
+
+##################################    
+
+Users: 
+_id: 
+    string,
+    required
+name: {
+    firstname: string, required
+    Lastname: string, required
+}
+email: 
+    string,
+    required
+hashedPassword: 
+    string,
+    requred
+role: {
+    IsCustomer: Boolean,
+    IsAdmin: Boolean
+}
+
+####################################
+
+
+Cart:
+    _id: 
+        string,
+        required
+    user_id: 
+        string,
+        required
+    items: []
+        
+######################################
+
+Product:
+    _id:
+        string,
+        required
