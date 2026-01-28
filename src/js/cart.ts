@@ -1,5 +1,5 @@
-import { getLocalStorage } from "./utils.mjs";
-import type { Product } from "./types.mjs";
+import { getLocalStorage } from "./utils.mts";
+import type { Product } from "./types.mts";
 
 function renderCartContents() {
   const cartItems = getLocalStorage("so-cart");
@@ -12,7 +12,7 @@ function cartItemTemplate(item: Product) {
   const newItem = `<li class="cart-card divider">
   <a href="#" class="cart-card__image">
     <img
-      src="${item.image}"
+      src="${item.images.primaryMedium}"
       alt="${item.name}"
     />
   </a>
