@@ -1,3 +1,30 @@
+Alert: 
+_id: 
+    string,
+    required
+title:
+    string,
+    required,
+    description: "The title of the alert, must not be blank"
+type:
+    string,
+    required,
+    enum: ["warning", "info", "promotion"],
+    description: "The type of the alert, must be one of: warning, info, promotion"
+status:
+    string,
+    required,
+    enum: ["active", "inactive"]
+    description: "The status of the alert, must be one of: active or inactive"
+createdAt:
+    date,
+    required
+modifiedAt:
+    date,
+    required
+
+################################
+
 Orders:
 _id:
     string,
@@ -13,7 +40,7 @@ shipping_address: {
     string,
     required
 }
-Items: []
+Items: [List of product ids]
 total:
     number,
     required
@@ -23,7 +50,7 @@ createdAt:
 
 ##################################    
 
-Users: 
+User: 
 _id: 
     string,
     required
@@ -52,7 +79,18 @@ Cart:
     user_id: 
         string,
         required
-    items: []
+    items: [list of product ids]
+####################################
+
+
+Reviews:
+    _id: 
+        string,
+        required
+    product_id: 
+        string,
+        required
+    content: [list of reviews]
         
 ######################################
 
@@ -60,3 +98,31 @@ Product:
     _id:
         string,
         required
+    brand:
+        string,
+        required
+    product_name:
+        string,
+        required
+    description:
+        string,
+    category:
+        string,
+        required
+    price:
+        number:
+        required
+    Color:
+        string,
+        required
+    reviews: {
+      ReviewsUrl: "/products/20cxg/reviews/",
+      ReviewCount: number,
+      AverageRating: number
+    },
+    isClearance:
+        boolean,
+        required
+    
+
+    
