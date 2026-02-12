@@ -22,21 +22,21 @@ const title = product.data.name
   
     <!-- Product details will go here -->
     <section class="product-detail">
-    <h3>{product.data.brand.name}</h3>
+    <h3>{product.data.brand?.name || product.data.brand || 'Brand'}</h3>
 
-    <h2 class="divider">{product.data.nameWithoutBrand}</h2>
+    <h2 class="divider">{product.data.nameWithoutBrand || product.data.name}</h2>
 
     <img
         class="divider"
-        src={product.data.images.primaryExtraLarge}
+        src={product.data.images?.primaryExtraLarge || product.data.image || '/banner.jpg'}
         alt={product.data.nameWithoutBrand}
     />
 
-    <p class="product-card__price">{product.data.finalPrice}</p>
+    <p class="product-card__price">{product.data.finalPrice || product.data.price || 'Price TBA'}</p>
 
-    <p class="product__color">{product.data.colors[0].colorName}</p>
+    <p class="product__color">{product.data.colors?.[0]?.colorName || product.data.color || ''}</p>
 
-    <p class="product__description" set:html={product.data.descriptionHtmlSimple}>
+    <p class="product__description" set:html={product.data.descriptionHtmlSimple || product.data.description || ''}>
         
     </p>
 
