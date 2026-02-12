@@ -1,0 +1,56 @@
+---
+import Welcome from '../components/Welcome.astro';
+import Layout from '../layouts/Layout.astro';
+
+const title = "Home"
+// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
+// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+---
+
+<Layout title = {title}>
+	
+	<div class="hero">
+	<img
+		src="/banner-sm.jpg"
+		srcset="/banner-sm.jpg 500w, /banner.jpg"
+		alt="image of a high mountain lake"
+	/>
+	<div class="logo logo--square">
+		<img src="/noun_Tent_2517.svg" alt="tent image for logo" />
+		<div>Sleep<span class="highlight">Outside</span></div>
+	</div>
+	</div>
+	<section class="mission">
+	<p>We spend too much time these days indoors...sitting usually.</p>
+	<p>No wonder we are a mess!</p>
+	<p>
+		What we really need is to get outside...in fact SLEEP outside. Our
+		mission is to provide you with everything you need to do this
+		comfortably at an affordable price.
+	</p>
+	</section>
+	<section class="categories">
+	<h2>Shop by Category</h2>
+	<div class="category-grid">
+		<a href="/product-list?category=tents" class="category-card">
+			<img src="https://api.iconify.design/game-icons/tent.svg?color=7c5c4d" alt="Tent Icon from Noun Project: Mustofa Bayu" />
+			<h3>Tents</h3>
+		</a>
+		<a href="/product-list?category=sleeping-bags" class="category-card">
+			<img src="https://api.iconify.design/game-icons/sleeping-bag.svg?color=7c5c4d" alt="Sleeping Bag Icon from Noun Project: Mustofa Bayu" />
+			<h3>Sleeping Bags</h3>
+		</a>
+		<a href="/product-list?category=backpacks" class="category-card">
+			<img src="https://api.iconify.design/game-icons/backpack.svg?color=7c5c4d" alt="Backpack Icon from Noun Project: Mustofa Bayu" />
+			<h3>Backpacks</h3>
+		</a>
+		<a href="/product-list?category=hammocks" class="category-card">
+			<img src="https://api.iconify.design/game-icons/hammock.svg?color=7c5c4d" alt="Hammock Icon from Noun Project: Paul Richard" />
+			<h3>Hammocks</h3>
+		</a>
+	</div>
+	</section>
+
+	<script src="../js/main.ts"></script>
+
+</Layout>
