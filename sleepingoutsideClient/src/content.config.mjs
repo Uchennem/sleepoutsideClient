@@ -1,4 +1,4 @@
-import { defineCollection, glob, file } from "astro:content";
+import { defineCollection, glob } from "astro:content";
 
 // we can also create collections that load from markdown files in a directory...this is an example of how to do that.
 // const posts = defineCollection({
@@ -25,7 +25,8 @@ const products = defineCollection({
     } catch (error) {
       console.warn("Failed to fetch products from API, falling back to local file:", error);
       // Fall back to local JSON file if API is unavailable
-      return await file("public/json/tents.json").load();
+      const tentsData = await import("../public/json/tents.json", { assert: { type: "json" } });
+      return tentsData.default;
     }
   }
 });
