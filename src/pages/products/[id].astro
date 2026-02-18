@@ -15,33 +15,51 @@ type Props = CollectionEntry<"products">;
 
 // get the product data from the props to use in the template below. The actual data is in product.data
 const product = Astro.props;
-const title = product.data.name
+const data = product.data;
+const title = data.name ?? data.Name ?? "Product";
+const brandName = data.brand?.name ?? data.Brand?.Name ?? data.brand ?? data.Brand ?? "Brand";
+const nameWithoutBrand = data.nameWithoutBrand ?? data.NameWithoutBrand ?? data.name ?? data.Name ?? "Product";
+const imageSrc =
+  data.images?.primaryExtraLarge ??
+  data.Images?.PrimaryExtraLarge ??
+  data.image ??
+  data.Image ??
+  "/banner.jpg";
+const displayPrice = data.finalPrice ?? data.FinalPrice ?? data.price ?? data.ListPrice ?? "Price TBA";
+const colorName = data.colors?.[0]?.colorName ?? data.Colors?.[0]?.ColorName ?? data.color ?? data.Color ?? "";
+const description =
+  data.descriptionHtmlSimple ??
+  data.DescriptionHtmlSimple ??
+  data.description ??
+  data.Description ??
+  "";
+const productId = data.id ?? data.Id;
 ---
 <Layout title = {title}>
     <script src="../../js/product.ts"></script>
   
     <!-- Product details will go here -->
     <section class="product-detail">
-    <h3>{product.data.brand.name}</h3>
+    <h3>{brandName}</h3>
 
-    <h2 class="divider">{product.data.nameWithoutBrand}</h2>
+    <h2 class="divider">{nameWithoutBrand}</h2>
 
     <img
         class="divider"
-        src={product.data.images.primaryExtraLarge}
-        alt={product.data.nameWithoutBrand}
+        src={imageSrc}
+        alt={nameWithoutBrand}
     />
 
-    <p class="product-card__price">{product.data.finalPrice}</p>
+    <p class="product-card__price">{displayPrice}</p>
 
-    <p class="product__color">{product.data.colors[0].colorName}</p>
+    <p class="product__color">{colorName}</p>
 
-    <p class="product__description" set:html={product.data.descriptionHtmlSimple}>
+    <p class="product__description" set:html={description}>
         
     </p>
 
     <div class="product-detail__add">
-        <button id="addToCart" data-id={product.data.id}>Add to Cart</button>
+        <button id="addToCart" data-id={productId}>Add to Cart</button>
     </div>
     </section>
   
