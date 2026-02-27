@@ -15,7 +15,30 @@ type Props = CollectionEntry<"products">;
 
 // get the product data from the props to use in the template below. The actual data is in product.data
 const product = Astro.props;
-const title = product.data.name
+const title = product.data.name;
+const imageSmall =
+  product.data.images?.primarySmall ||
+  product.data.images?.primaryMedium ||
+  product.data.images?.primaryLarge ||
+  product.data.images?.primaryExtraLarge ||
+  product.data.image ||
+  '/banner.jpg';
+const imageMedium =
+  product.data.images?.primaryMedium ||
+  product.data.images?.primaryLarge ||
+  product.data.images?.primaryExtraLarge ||
+  product.data.image ||
+  '/banner.jpg';
+const imageLarge =
+  product.data.images?.primaryLarge ||
+  product.data.images?.primaryExtraLarge ||
+  product.data.image ||
+  '/banner.jpg';
+const imageExtraLarge =
+  product.data.images?.primaryExtraLarge ||
+  product.data.images?.primaryLarge ||
+  product.data.image ||
+  '/banner.jpg';
 ---
 <Layout title = {title}>
     <script src="../../js/product.ts"></script>
@@ -28,7 +51,9 @@ const title = product.data.name
 
     <img
         class="divider"
-        src={product.data.images?.primaryExtraLarge || product.data.image || '/banner.jpg'}
+      src={imageMedium}
+      srcset={`${imageSmall} 320w, ${imageMedium} 640w, ${imageLarge} 960w, ${imageExtraLarge} 1280w`}
+      sizes="(max-width: 600px) 95vw, (max-width: 1080px) 70vw, 500px"
         alt={product.data.nameWithoutBrand}
     />
 
