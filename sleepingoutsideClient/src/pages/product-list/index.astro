@@ -2,9 +2,28 @@
 import Layout from '../../layouts/Layout.astro';
 import ProductList from '../../js/components/ProductList.svelte';
 
-const title = "Products"
+const title = "Products";
+const category = Astro.url.searchParams.get("category") ?? "tents";
+
+function formatCategoryLabel(value: string) {
+	return value
+		.split("-")
+		.map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+		.join(" ");
+}
+
+let breadcrumb = "";
+
+try {
+	const response = await fetch(`${import.meta.env.PUBLIC_SERVER_URL}products?category=${category}`);
+	const data = await response.json();
+	const itemCount = Array.isArray(data?.results) ? data.results.length : 0;
+	breadcrumb = `${formatCategoryLabel(category)}->(${itemCount} items)`;
+} catch {
+	breadcrumb = `${formatCategoryLabel(category)}->(0 items)`;
+}
 ---
 
-<Layout title={title}>
+<Layout title={title} breadcrumb={breadcrumb}>
 	<ProductList client:load />
 </Layout>

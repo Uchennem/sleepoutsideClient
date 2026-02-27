@@ -1,5 +1,5 @@
 ---
-let {title} = Astro.props;
+let {title, breadcrumb} = Astro.props;
 import '../css/style.css';
 import UserMenu from '../js/components/UserMenu.svelte';
 ---
@@ -54,6 +54,7 @@ import UserMenu from '../js/components/UserMenu.svelte';
         </div>
       </nav>
     </header>
+  {breadcrumb ? <div class="breadcrumb">{breadcrumb}</div> : null}
 	<main>
 		<slot />
 	</main>
