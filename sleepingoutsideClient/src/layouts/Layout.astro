@@ -2,6 +2,7 @@
 let {title} = Astro.props;
 import '../css/style.css';
 import UserMenu from '../js/components/UserMenu.svelte';
+import CartCount from '../js/components/CartCount.svelte';
 ---
 
 <!doctype html>
@@ -51,6 +52,7 @@ import UserMenu from '../js/components/UserMenu.svelte';
             <text x="0" y="120" fill="#000000" font-size="5px" font-weight="bold" font-family="'Helvetica Neue', Helvetica, Arial-Unicode, Arial, Sans-serif">from the Noun Project</text> -->
             </svg>
           </a>
+          <CartCount client:load />
         </div>
       </nav>
     </header>

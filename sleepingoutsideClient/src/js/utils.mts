@@ -14,6 +14,9 @@ export function getLocalStorage(key:string) {
 // save data to local storage
 export function setLocalStorage(key:string, data:any) {
   localStorage.setItem(key, JSON.stringify(data));
+  if (key === "so-cart") {
+    window.dispatchEvent(new CustomEvent("so-cart-updated"));
+  }
 }
 // set a listener for both touchend and click
 interface ClickHandler {
