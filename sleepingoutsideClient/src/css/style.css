@@ -186,6 +186,22 @@ button {
   fill: gray;
 }
 
+.cart__count {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: var(--secondary-color);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: bold;
+  line-height: 18px;
+  text-align: center;
+  padding: 0 4px;
+}
+
 /* End cart icon styles */
 
 .mission {
