@@ -1,15 +1,24 @@
-import { getLocalStorage } from "./utils.mts";
+import { getLocalStorage, setLocalStorage } from "./utils.mts";
 import type { Product } from "./types.mts";
 
 function renderCartContents() {
-  const cartItems = getLocalStorage("so-cart");
-  const htmlItems = cartItems.map((item: Product) => cartItemTemplate(item));
-  const listEl = document.querySelector(".product-list");
-  if (listEl) listEl.innerHTML = htmlItems.join("");
+  const listEl = document.querySelector(".product-list") as HTMLElement | null;
+  if (!listEl) return;
+
+  const cartData = getLocalStorage("so-cart");
+  const cartItems = Array.isArray(cartData) ? cartData : [];
+  const htmlItems = cartItems.map((item: Product, index: number) => cartItemTemplate(item, index));
+  listEl.innerHTML = htmlItems.join("");
+
+  if (!listEl.dataset.removeListenerAttached) {
+    listEl.addEventListener("click", removeFromCartHandler);
+    listEl.dataset.removeListenerAttached = "true";
+  }
 }
 
-function cartItemTemplate(item: Product) {
+function cartItemTemplate(item: Product, index: number) {
   const newItem = `<li class="cart-card divider">
+  <button class="cart-card__remove" data-id="${item.id}" data-index="${index}" aria-label="Remove ${item.name} from cart" title="Remove from cart">&times;</button>
   <a href="#" class="cart-card__image">
     <img
       src="${item.images.primaryMedium}"
@@ -25,6 +34,24 @@ function cartItemTemplate(item: Product) {
 </li>`;
 
   return newItem;
+}
+
+function removeFromCartHandler(e: Event) {
+  const target = e.target as HTMLElement;
+  const removeButton = target.closest(".cart-card__remove") as HTMLButtonElement | null;
+  if (!removeButton) return;
+
+  const indexValue = removeButton.dataset.index;
+  if (typeof indexValue !== "string") return;
+
+  const index = Number(indexValue);
+  if (Number.isNaN(index)) return;
+
+  const cartData = getLocalStorage("so-cart");
+  const cartItems = Array.isArray(cartData) ? cartData : [];
+  cartItems.splice(index, 1);
+  setLocalStorage("so-cart", cartItems);
+  renderCartContents();
 }
 
 renderCartContents();
