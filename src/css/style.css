@@ -242,6 +242,11 @@ button {
   width: 100%;
 }
 
+.product-error {
+  color: var(--secondary-color);
+  font-weight: 600;
+}
+
 /* Start cart list card styles */
 .cart-card {
   display: grid;
