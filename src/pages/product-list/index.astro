@@ -1,0 +1,14 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const title = "Product List";
+---
+
+<Layout title={title} showBreadcrumb={true}>
+  <section class="products">
+    <h2>Top Products</h2>
+    <ul class="product-list"></ul>
+  </section>
+
+  <script src="../../js/product-list.ts"></script>
+</Layout>
