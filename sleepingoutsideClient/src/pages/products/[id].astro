@@ -15,9 +15,19 @@ type Props = CollectionEntry<"products">;
 
 // get the product data from the props to use in the template below. The actual data is in product.data
 const product = Astro.props;
-const title = product.data.name
+const title = product.data.name;
+
+function formatCategoryLabel(value: string) {
+  return value
+    .split("-")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
+const category = product.data.category ?? "";
+const breadcrumb = category ? formatCategoryLabel(category) : "";
 ---
-<Layout title = {title}>
+<Layout title = {title} breadcrumb={breadcrumb}>
     <script src="../../js/product.ts"></script>
   
     <!-- Product details will go here -->
