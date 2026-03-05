@@ -182,8 +182,27 @@ button {
 .cart svg {
   width: calc(var(--icon-size) - 2px);
 }
+.cart svg.animate {
+  animation: cart-bounce 0.45s ease-in-out;
+  transform-origin: center;
+}
 .cart:hover svg {
   fill: gray;
+}
+
+@keyframes cart-bounce {
+  0% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(1.15);
+  }
+  70% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 /* End cart icon styles */

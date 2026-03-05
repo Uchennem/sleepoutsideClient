@@ -188,6 +188,10 @@ button {
 .cart svg {
   width: calc(var(--icon-size) - 2px);
 }
+.cart svg.animate {
+  animation: cart-bounce 0.45s ease-in-out;
+  transform-origin: center;
+}
 .cart:hover svg {
   fill: gray;
 }
