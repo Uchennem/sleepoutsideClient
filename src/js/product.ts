@@ -2,21 +2,13 @@ import type { Product } from "./types.mts";
 import { setLocalStorage, getLocalStorage } from "./utils.mts";
 import { findProductById } from "./productData.mts";
 
-function showProductError(message: string) {
-  const addContainer = document.querySelector(".product-detail__add") as HTMLElement | null;
-  if (addContainer) {
-    addContainer.innerHTML = `<p class="product-error" role="alert">${message}</p>`;
-    return;
-  }
+function animateCartIcon() {
+  const cartIcon = document.querySelector(".cart svg") as SVGElement | null;
+  if (!cartIcon) return;
 
-  const detailSection = document.querySelector(".product-detail");
-  if (!detailSection) return;
-
-  const errorMessage = document.createElement("p");
-  errorMessage.className = "product-error";
-  errorMessage.setAttribute("role", "alert");
-  errorMessage.textContent = message;
-  detailSection.append(errorMessage);
+  cartIcon.classList.remove("animate");
+  void cartIcon.getBoundingClientRect();
+  cartIcon.classList.add("animate");
 }
 
 function addProductToCart(product: Product) {
@@ -37,8 +29,7 @@ async function addToCartHandler(e: Event) {
   try {
     const product = await findProductById(productId);
     addProductToCart(product);
-  } catch {
-    showProductError("Product not found. Unable to add to cart.");
+    animateCartIcon();
   }
 }
 

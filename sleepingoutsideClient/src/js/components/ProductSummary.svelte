@@ -6,7 +6,12 @@
 
 <li class="product-card">
   <a href={`/products/${product.id}`}>
-    <img src={product.images.primaryMedium} alt={product.name} />
+    <img
+      src={product.images.primaryMedium}
+      srcset={`${product.images.primarySmall} 320w, ${product.images.primaryMedium} 640w, ${product.images.primaryLarge} 960w`}
+      sizes="(max-width: 500px) 95vw, (max-width: 900px) 45vw, 300px"
+      alt={product.name}
+    />
     <h3 class="card__brand">{product.brand.name}</h3>
     <h2 class="card__name">{product.nameWithoutBrand}</h2>
     <p class="product-card__price">${product.finalPrice}</p>

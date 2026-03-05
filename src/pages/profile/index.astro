@@ -1,0 +1,12 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Profile from "../../components/Profile.svelte";
+
+const title = "Profile";
+---
+
+<Layout title={title}>
+  <section class="profile">
+    <Profile client:load />
+  </section>
+</Layout>
