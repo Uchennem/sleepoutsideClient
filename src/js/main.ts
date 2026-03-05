@@ -1,3 +1,3 @@
-import { openUserMenu } from "./utils.mjs";
+import { checkAuth } from "./auth.svelte";
 
-openUserMenu(".user__button");
+checkAuth();
