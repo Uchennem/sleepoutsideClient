@@ -38,7 +38,9 @@ const breadcrumb = category ? formatCategoryLabel(category) : "";
 
     <img
         class="divider"
-        src={product.data.images?.primaryExtraLarge || product.data.image || '/banner.jpg'}
+      src={imageMedium}
+      srcset={`${imageSmall} 320w, ${imageMedium} 640w, ${imageLarge} 960w, ${imageExtraLarge} 1280w`}
+      sizes="(max-width: 600px) 95vw, (max-width: 1080px) 70vw, 500px"
         alt={product.data.nameWithoutBrand}
     />
 
