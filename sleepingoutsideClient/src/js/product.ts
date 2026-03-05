@@ -12,15 +12,22 @@ function animateCartIcon() {
 }
 
 function addProductToCart(product: Product) {
-  const cart = getLocalStorage("so-cart");
+  const cartData = getLocalStorage("so-cart");
+  const cart = Array.isArray(cartData) ? cartData : [];
   cart.push(product);
   setLocalStorage("so-cart", cart);
 }
 // add to cart button event handler
 async function addToCartHandler(e: Event) {
   const target = e.target as HTMLButtonElement;
-  if (target.dataset.id) {
-    const product = await findProductById(target.dataset.id);
+  const productId = target.dataset.id;
+  if (!productId) {
+    showProductError("Product not found. Unable to add to cart.");
+    return;
+  }
+
+  try {
+    const product = await findProductById(productId);
     addProductToCart(product);
     animateCartIcon();
   }

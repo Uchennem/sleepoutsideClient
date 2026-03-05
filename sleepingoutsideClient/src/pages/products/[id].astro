@@ -32,9 +32,11 @@ const breadcrumb = category ? formatCategoryLabel(category) : "";
   
     <!-- Product details will go here -->
     <section class="product-detail">
-    <h3>{product.data.brand?.name || product.data.brand || 'Brand'}</h3>
+    {hasProduct ? (
+      <>
+    <h3>{data?.brand?.name || data?.brand || 'Brand'}</h3>
 
-    <h2 class="divider">{product.data.nameWithoutBrand || product.data.name}</h2>
+    <h2 class="divider">{data?.nameWithoutBrand || data?.name}</h2>
 
     <img
         class="divider"
@@ -44,17 +46,24 @@ const breadcrumb = category ? formatCategoryLabel(category) : "";
         alt={product.data.nameWithoutBrand}
     />
 
-    <p class="product-card__price">{product.data.finalPrice || product.data.price || 'Price TBA'}</p>
+    <p class="product-card__price">{data?.finalPrice || data?.price || 'Price TBA'}</p>
 
-    <p class="product__color">{product.data.colors?.[0]?.colorName || product.data.color || ''}</p>
+    <p class="product__color">{data?.colors?.[0]?.colorName || data?.color || ''}</p>
 
-    <p class="product__description" set:html={product.data.descriptionHtmlSimple || product.data.description || ''}>
+    <p class="product__description" set:html={data?.descriptionHtmlSimple || data?.description || ''}>
         
     </p>
 
     <div class="product-detail__add">
-        <button id="addToCart" data-id={product.data.id}>Add to Cart</button>
+        <button id="addToCart" data-id={productId}>Add to Cart</button>
     </div>
+      </>
+    ) : (
+      <>
+      <h2 class="divider">Product not found</h2>
+      <p class="product-error" role="alert">We couldn&apos;t find that product. Please choose another item.</p>
+      </>
+    )}
     </section>
   
 </Layout>

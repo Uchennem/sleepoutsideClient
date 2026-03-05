@@ -14,32 +14,35 @@ export async function getStaticPaths() {
 type Props = CollectionEntry<"products">;
 
 // get the product data from the props to use in the template below. The actual data is in product.data
-const product = Astro.props;
-const data = product.data;
-const title = data.name ?? data.Name ?? "Product";
-const brandName = data.brand?.name ?? data.Brand?.Name ?? data.brand ?? data.Brand ?? "Brand";
-const nameWithoutBrand = data.nameWithoutBrand ?? data.NameWithoutBrand ?? data.name ?? data.Name ?? "Product";
+const product = Astro.props as Partial<Props>;
+const data = product?.data;
+const productId = data?.id ?? data?.Id;
+const hasProduct = Boolean(data && productId);
+const title = hasProduct ? (data?.name ?? data?.Name ?? "Product") : "Product Not Found";
+const brandName = data?.brand?.name ?? data?.Brand?.Name ?? data?.brand ?? data?.Brand ?? "Brand";
+const nameWithoutBrand = data?.nameWithoutBrand ?? data?.NameWithoutBrand ?? data?.name ?? data?.Name ?? "Product";
 const imageSrc =
-  data.images?.primaryExtraLarge ??
-  data.Images?.PrimaryExtraLarge ??
-  data.image ??
-  data.Image ??
+  data?.images?.primaryExtraLarge ??
+  data?.Images?.PrimaryExtraLarge ??
+  data?.image ??
+  data?.Image ??
   "/banner.jpg";
-const displayPrice = data.finalPrice ?? data.FinalPrice ?? data.price ?? data.ListPrice ?? "Price TBA";
-const colorName = data.colors?.[0]?.colorName ?? data.Colors?.[0]?.ColorName ?? data.color ?? data.Color ?? "";
+const displayPrice = data?.finalPrice ?? data?.FinalPrice ?? data?.price ?? data?.ListPrice ?? "Price TBA";
+const colorName = data?.colors?.[0]?.colorName ?? data?.Colors?.[0]?.ColorName ?? data?.color ?? data?.Color ?? "";
 const description =
-  data.descriptionHtmlSimple ??
-  data.DescriptionHtmlSimple ??
-  data.description ??
-  data.Description ??
+  data?.descriptionHtmlSimple ??
+  data?.DescriptionHtmlSimple ??
+  data?.description ??
+  data?.Description ??
   "";
-const productId = data.id ?? data.Id;
 ---
 <Layout title = {title}>
     <script src="../../js/product.ts"></script>
   
     <!-- Product details will go here -->
     <section class="product-detail">
+    {hasProduct ? (
+      <>
     <h3>{brandName}</h3>
 
     <h2 class="divider">{nameWithoutBrand}</h2>
@@ -61,6 +64,13 @@ const productId = data.id ?? data.Id;
     <div class="product-detail__add">
         <button id="addToCart" data-id={productId}>Add to Cart</button>
     </div>
+      </>
+    ) : (
+      <>
+      <h2 class="divider">Product not found</h2>
+      <p class="product-error" role="alert">We couldn&apos;t find that product. Please choose another item.</p>
+      </>
+    )}
     </section>
   
 </Layout>
