@@ -42,3 +42,9 @@ export function openUserMenu(selector:string) {
     });
   });
 }
+
+export function getParam(param: string): string | null {
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  return urlParams.get(param);
+}

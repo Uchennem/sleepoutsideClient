@@ -1,6 +1,7 @@
 ---
 let {title} = Astro.props;
 import '../css/style.css';
+import UserMenu from '../js/components/UserMenu.svelte';
 ---
 
 <!doctype html>
@@ -9,6 +10,7 @@ import '../css/style.css';
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sleep Outside | {title}</title>
+    <script src="../js/main.ts"></script>
   </head>
   <body>
     <header class="divider">
@@ -18,20 +20,7 @@ import '../css/style.css';
       </div>
       <nav class="menu-right">
         <div class="user-menu-container">
-          <div class="user">
-            <button
-              class="user__button"
-              aria-label="user management"
-              title="User Management"
-            >
-              <img src="/noun-hiker.svg" alt="user icon" />
-            </button>
-            <nav class="user__menu">
-              <a href="#">Login</a>
-              <a href="#">Profile</a>
-              <a href="#">Orders</a>
-            </nav>
-          </div>
+          <UserMenu client:load />
         </div>
         <div class="cart">
           <a
