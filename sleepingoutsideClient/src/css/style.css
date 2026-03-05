@@ -42,6 +42,12 @@ header {
   padding: 0 10px;
 }
 
+.breadcrumb {
+  border-bottom: 2px solid var(--primary-color);
+  padding: 0.4em 10px;
+  font-size: var(--small-font);
+}
+
 .menu-right {
   /* padding-top: 0.5em; */
   display: flex;
@@ -190,19 +196,20 @@ button {
   fill: gray;
 }
 
-@keyframes cart-bounce {
-  0% {
-    transform: scale(1);
-  }
-  35% {
-    transform: scale(1.15);
-  }
-  70% {
-    transform: scale(0.95);
-  }
-  100% {
-    transform: scale(1);
-  }
+.cart__count {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: var(--secondary-color);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: bold;
+  line-height: 18px;
+  text-align: center;
+  padding: 0 4px;
 }
 
 /* End cart icon styles */
