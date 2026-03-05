@@ -9,7 +9,12 @@ export function qs(selector:string, parent = document) {
 export function getLocalStorage(key:string) {
   const data = localStorage.getItem(key);
   if (!data) return [];
-  return JSON.parse(data);
+  try {
+    return JSON.parse(data);
+  } catch {
+    localStorage.removeItem(key);
+    return [];
+  }
 }
 // save data to local storage
 export function setLocalStorage(key:string, data:any) {
