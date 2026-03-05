@@ -2,18 +2,19 @@ import { getLocalStorage, setLocalStorage } from "./utils.mts";
 import type { Product } from "./types.mts";
 
 function renderCartContents() {
-  const listEl = document.querySelector(".product-list") as HTMLElement | null;
+  const listEl = document.querySelector(".product-list");
   if (!listEl) return;
 
-  const cartData = getLocalStorage("so-cart");
-  const cartItems = Array.isArray(cartData) ? cartData : [];
-  const htmlItems = cartItems.map((item: Product, index: number) => cartItemTemplate(item, index));
-  listEl.innerHTML = htmlItems.join("");
+  const storedCart = getLocalStorage("so-cart");
+  const cartItems = Array.isArray(storedCart) ? storedCart : [];
 
-  if (!listEl.dataset.removeListenerAttached) {
-    listEl.addEventListener("click", removeFromCartHandler);
-    listEl.dataset.removeListenerAttached = "true";
+  if (cartItems.length === 0) {
+    listEl.innerHTML = "<li class=\"cart-card divider\">Your cart is empty.</li>";
+    return;
   }
+
+  const htmlItems = cartItems.map((item: Product) => cartItemTemplate(item));
+  listEl.innerHTML = htmlItems.join("");
 }
 
 function cartItemTemplate(item: Product, index: number) {

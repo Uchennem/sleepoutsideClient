@@ -1,0 +1,12 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Login from "../../js/components/Login.svelte";
+
+const title = "Login";
+---
+
+<Layout title={title}>
+  <section class="login">
+    <Login client:load />
+  </section>
+</Layout>
