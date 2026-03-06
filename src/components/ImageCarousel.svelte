@@ -6,12 +6,8 @@
     sizes?: string;
   }
 
-  interface Props {
-    images: ImageData[];
-  }
-
-  let { images = [] }: Props = $props();
-  let currentIndex = $state(0);
+  export let images: ImageData[] = [];
+  let currentIndex = 0;
 
   function nextImage() {
     currentIndex = (currentIndex + 1) % images.length;
@@ -33,10 +29,10 @@
     }
   }
 
-  const showCarousel = $derived(images.length > 1);
+  $: showCarousel = images.length > 1;
 </script>
 
-<svelte:window onkeydown={handleKeydown} />
+<svelte:window on:keydown={handleKeydown} />
 
 <div class="image-carousel">
   {#if images.length > 0}
@@ -44,7 +40,7 @@
       {#if showCarousel}
         <button 
           class="carousel-btn carousel-btn-prev" 
-          onclick={prevImage}
+          on:click={prevImage}
           aria-label="Previous image"
         >
           ‹
@@ -62,7 +58,7 @@
       {#if showCarousel}
         <button 
           class="carousel-btn carousel-btn-next" 
-          onclick={nextImage}
+          on:click={nextImage}
           aria-label="Next image"
         >
           ›
@@ -76,7 +72,7 @@
           <button
             class="thumbnail-btn"
             class:active={currentIndex === index}
-            onclick={() => goToImage(index)}
+            on:click={() => goToImage(index)}
             aria-label={`View image ${index + 1}`}
           >
             <img
