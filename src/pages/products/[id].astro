@@ -1,20 +1,46 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import { type CollectionEntry, getCollection } from "astro:content";
+import ImageCarousel from "../../components/ImageCarousel.svelte";
 
-// map though all products to create a page for each one
+// map through all products to create a page for each one
 export async function getStaticPaths() {
-  const products = await getCollection("products");
+  // @ts-ignore - Node built-ins are available at Astro build time
+  const { readFile } = await import("fs/promises");
+  // @ts-ignore - Node built-ins are available at Astro build time
+  const { fileURLToPath } = await import("url");
+  const productDataFiles = ["tents.json", "backpacks.json", "sleeping-bags.json"];
 
-  return products.map((product) => ({
-    params: { id: product.id },
-    props: product
-  }));
+  const normalizeProducts = (source: unknown) => {
+    if (Array.isArray(source)) return source;
+    if (source && typeof source === "object" && Array.isArray((source as any).Result)) {
+      return (source as any).Result;
+    }
+    return [];
+  };
+
+  const productFileReads = productDataFiles.map(async (fileName) => {
+    const filePath = fileURLToPath(new URL(`../../../public/json/${fileName}`, import.meta.url));
+    const fileText = await readFile(filePath, "utf-8");
+    return normalizeProducts(JSON.parse(fileText));
+  });
+
+  const products = (await Promise.all(productFileReads)).flat();
+
+  return products
+    .map((item: any) => {
+      const id = item?.id ?? item?.Id;
+      if (!id) return null;
+
+      return {
+        params: { id: String(id) },
+        props: { data: item }
+      };
+    })
+    .filter(Boolean);
 }
-type Props = CollectionEntry<"products">;
 
 // get the product data from the props to use in the template below. The actual data is in product.data
-const product = Astro.props as Partial<Props>;
+const product = Astro.props as { data?: any };
 const data = product?.data;
 const productId = data?.id ?? data?.Id;
 const hasProduct = Boolean(data && productId);
@@ -59,6 +85,21 @@ function formatCategoryLabel(value: string) {
 
 const category = data?.category ?? data?.Category ?? "";
 const breadcrumb = category ? formatCategoryLabel(category) : "";
+
+// Extract extra images for carousel
+const extraImages = data?.images?.extraImages ?? data?.Images?.ExtraImages ?? [];
+const carouselImages = [
+  {
+    src: imageExtraLarge,
+    srcset: `${imageSmall} 80w, ${imageMedium} 160w, ${imageLarge} 320w, ${imageExtraLarge} 600w`,
+    sizes: "(max-width: 600px) 95vw, 600px",
+    alt: nameWithoutBrand
+  },
+  ...(Array.isArray(extraImages) ? extraImages.map((img: any) => ({
+    src: img.Src ?? img.src ?? "",
+    alt: img.Title ?? img.title ?? nameWithoutBrand
+  })) : [])
+];
 ---
 <Layout title = {title} breadcrumb={breadcrumb} showBreadcrumb={Boolean(breadcrumb)}>
     <script src="../../js/product.ts"></script>
@@ -71,13 +112,7 @@ const breadcrumb = category ? formatCategoryLabel(category) : "";
 
     <h2 class="divider">{nameWithoutBrand}</h2>
 
-    <img
-        class="divider"
-      src={imageMedium}
-      srcset={`${imageSmall} 320w, ${imageMedium} 640w, ${imageLarge} 960w, ${imageExtraLarge} 1280w`}
-      sizes="(max-width: 600px) 95vw, (max-width: 1080px) 70vw, 500px"
-        alt={nameWithoutBrand}
-    />
+    <ImageCarousel images={carouselImages} client:load />
 
     <p class="product-card__price">{displayPrice}</p>
 
