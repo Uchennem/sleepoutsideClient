@@ -2,7 +2,7 @@ import { getLocalStorage, setLocalStorage } from "./utils.mts";
 import type { Product } from "./types.mts";
 
 function renderCartContents() {
-  const listEl = document.querySelector(".product-list");
+  const listEl = document.querySelector(".product-list") as HTMLElement | null;
   if (!listEl) return;
 
   const storedCart = getLocalStorage("so-cart");
@@ -13,8 +13,13 @@ function renderCartContents() {
     return;
   }
 
-  const htmlItems = cartItems.map((item: Product) => cartItemTemplate(item));
+  const htmlItems = cartItems.map((item: Product, index: number) => cartItemTemplate(item, index));
   listEl.innerHTML = htmlItems.join("");
+
+  if (!listEl.dataset.removeListenerAttached) {
+    listEl.addEventListener("click", removeFromCartHandler);
+    listEl.dataset.removeListenerAttached = "true";
+  }
 }
 
 function cartItemTemplate(item: Product, index: number) {

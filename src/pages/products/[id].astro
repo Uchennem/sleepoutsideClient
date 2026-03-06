@@ -21,12 +21,26 @@ const hasProduct = Boolean(data && productId);
 const title = hasProduct ? (data?.name ?? data?.Name ?? "Product") : "Product Not Found";
 const brandName = data?.brand?.name ?? data?.Brand?.Name ?? data?.brand ?? data?.Brand ?? "Brand";
 const nameWithoutBrand = data?.nameWithoutBrand ?? data?.NameWithoutBrand ?? data?.name ?? data?.Name ?? "Product";
-const imageSrc =
-  data?.images?.primaryExtraLarge ??
-  data?.Images?.PrimaryExtraLarge ??
+const imageSmall =
+  data?.images?.primarySmall ??
+  data?.Images?.PrimarySmall ??
+  data?.images?.primaryMedium ??
+  data?.Images?.PrimaryMedium ??
   data?.image ??
   data?.Image ??
   "/banner.jpg";
+const imageMedium =
+  data?.images?.primaryMedium ??
+  data?.Images?.PrimaryMedium ??
+  imageSmall;
+const imageLarge =
+  data?.images?.primaryLarge ??
+  data?.Images?.PrimaryLarge ??
+  imageMedium;
+const imageExtraLarge =
+  data?.images?.primaryExtraLarge ??
+  data?.Images?.PrimaryExtraLarge ??
+  imageLarge;
 const displayPrice = data?.finalPrice ?? data?.FinalPrice ?? data?.price ?? data?.ListPrice ?? "Price TBA";
 const colorName = data?.colors?.[0]?.colorName ?? data?.Colors?.[0]?.ColorName ?? data?.color ?? data?.Color ?? "";
 const description =
@@ -35,8 +49,18 @@ const description =
   data?.description ??
   data?.Description ??
   "";
+
+function formatCategoryLabel(value: string) {
+  return value
+    .split("-")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
+const category = data?.category ?? data?.Category ?? "";
+const breadcrumb = category ? formatCategoryLabel(category) : "";
 ---
-<Layout title = {title}>
+<Layout title = {title} breadcrumb={breadcrumb} showBreadcrumb={Boolean(breadcrumb)}>
     <script src="../../js/product.ts"></script>
   
     <!-- Product details will go here -->
@@ -49,7 +73,9 @@ const description =
 
     <img
         class="divider"
-        src={imageSrc}
+      src={imageMedium}
+      srcset={`${imageSmall} 320w, ${imageMedium} 640w, ${imageLarge} 960w, ${imageExtraLarge} 1280w`}
+      sizes="(max-width: 600px) 95vw, (max-width: 1080px) 70vw, 500px"
         alt={nameWithoutBrand}
     />
 
