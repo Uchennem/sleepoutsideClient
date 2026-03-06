@@ -10,5 +10,18 @@ const title = "Product List";
     <ul class="product-list"></ul>
   </section>
 
+  <div class="quick-view-modal hidden" id="quickViewModal" role="dialog" aria-modal="true" aria-labelledby="quickViewTitle">
+    <div class="quick-view-modal__backdrop" data-close-modal="true"></div>
+    <div class="quick-view-modal__content">
+      <button class="quick-view-modal__close" type="button" aria-label="Close quick view" data-close-modal="true">&times;</button>
+      <img id="quickViewImage" src="/banner.jpg" alt="" />
+      <h3 id="quickViewBrand"></h3>
+      <h2 id="quickViewTitle"></h2>
+      <p id="quickViewPrice" class="product-card__price"></p>
+      <p id="quickViewColor"></p>
+      <p id="quickViewDescription"></p>
+    </div>
+  </div>
+
   <script src="../../js/product-list.ts"></script>
 </Layout>

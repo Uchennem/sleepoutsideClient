@@ -312,6 +312,13 @@ button {
   margin: 0.5em 0;
 }
 
+.quick-view-button {
+  width: 100%;
+  margin-top: 0.75em;
+  padding: 0.45em 0.75em;
+  font-size: 0.95em;
+}
+
 .card__brand {
   font-size: var(--small-font);
 }
@@ -343,6 +350,53 @@ button {
 .product-error {
   color: var(--secondary-color);
   font-weight: 600;
+}
+
+.quick-view-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quick-view-modal.hidden {
+  display: none;
+}
+
+.quick-view-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.quick-view-modal__content {
+  position: relative;
+  background: white;
+  width: min(95vw, 560px);
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 1rem;
+  border-radius: 8px;
+  z-index: 1;
+}
+
+.quick-view-modal__content img {
+  width: 100%;
+  height: auto;
+}
+
+.quick-view-modal__close {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.35rem;
+  background: transparent;
+  color: var(--dark-grey);
+  border: 0;
+  font-size: 1.3rem;
+  line-height: 1;
+  padding: 0.1rem 0.35rem;
 }
 
 /* Start cart list card styles */
