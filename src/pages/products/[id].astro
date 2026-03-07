@@ -102,6 +102,9 @@ const carouselImages = [
 ];
 ---
 <Layout title = {title} breadcrumb={breadcrumb} showBreadcrumb={Boolean(breadcrumb)}>
+    {hasProduct && (
+      <script type="application/json" id="product-data" set:html={JSON.stringify(data)}></script>
+    )}
     <script src="../../js/product.ts"></script>
   
     <!-- Product details will go here -->
