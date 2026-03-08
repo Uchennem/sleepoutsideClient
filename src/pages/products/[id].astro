@@ -102,6 +102,9 @@ const carouselImages = [
 ];
 ---
 <Layout title = {title} breadcrumb={breadcrumb} showBreadcrumb={Boolean(breadcrumb)}>
+    {hasProduct && (
+      <script type="application/json" id="product-data" set:html={JSON.stringify(data)}></script>
+    )}
     <script src="../../js/product.ts"></script>
   
     <!-- Product details will go here -->
@@ -122,8 +125,9 @@ const carouselImages = [
         
     </p>
 
-    <div class="product-detail__add">
-        <button id="addToCart" data-id={productId}>Add to Cart</button>
+    <div class="product-detail__actions">
+      <button id="addToCart" data-id={productId}>Add to Cart</button>
+      <button id="addToWishlist" class="wishlist-button" data-id={productId}>Add to Wishlist</button>
     </div>
       </>
     ) : (
