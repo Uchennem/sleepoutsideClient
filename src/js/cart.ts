@@ -22,18 +22,27 @@ function getItemColor(item: Product) {
 
 function renderCartContents() {
   const listEl = document.querySelector(".product-list") as HTMLElement | null;
+  const cartFooterEl = document.querySelector(".cart-footer") as HTMLElement | null;
+  const cartTotalEl = document.querySelector(".cart-total") as HTMLElement | null;
   if (!listEl) return;
 
   const storedCart = getLocalStorage("so-cart");
-  const cartItems = Array.isArray(storedCart) ? storedCart : [];
+  const cartItems = Array.isArray(storedCart) ? storedCart as Product[] : [];
 
   if (cartItems.length === 0) {
     listEl.innerHTML = "<li class=\"cart-card divider\">Your cart is empty.</li>";
+    cartFooterEl?.classList.add("hide");
     return;
   }
 
   const htmlItems = cartItems.map((item: Product, index: number) => cartItemTemplate(item, index));
   listEl.innerHTML = htmlItems.join("");
+
+  const total = cartItems.reduce((sum, item) => sum + item.finalPrice, 0);
+  if (cartFooterEl && cartTotalEl) {
+    cartTotalEl.innerHTML = `Total: $${total.toFixed(2)}`;
+    cartFooterEl.classList.remove("hide");
+  }
 
   if (!listEl.dataset.removeListenerAttached) {
     listEl.addEventListener("click", removeFromCartHandler);
