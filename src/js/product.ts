@@ -1,5 +1,5 @@
 import type { Product } from "./types.mts";
-import { setLocalStorage, getLocalStorage } from "./utils.mts";
+import { setLocalStorage, getLocalStorage, getWishlistStorageKey, getWishlistItems, setWishlistItems } from "./utils.mts";
 
 function showProductError(message: string) {
   const detailSection = document.querySelector(".product-detail");
@@ -52,21 +52,6 @@ function addProductToCart(product: Product) {
   setLocalStorage("so-cart", cart);
 }
 
-function getWishlistStorageKey() {
-  const authData = getLocalStorage("so-user") as any;
-  const userId = authData?.isLoggedIn ? authData?.user?._id : null;
-  return userId ? `so-wishlist-${userId}` : "so-wishlist";
-}
-
-function getWishlistItems(): Product[] {
-  const data = getLocalStorage(getWishlistStorageKey());
-  return Array.isArray(data) ? data : [];
-}
-
-function setWishlistItems(items: Product[]) {
-  setLocalStorage(getWishlistStorageKey(), items);
-}
-
 function getProductData(): Product | null {
   const productDataEl = document.getElementById("product-data");
   if (!productDataEl) return null;
@@ -88,10 +73,10 @@ function getProductData(): Product | null {
       nameWithoutBrand: rawData.nameWithoutBrand ?? rawData.NameWithoutBrand ?? rawData.name ?? rawData.Name ?? "",
       name: rawData.name ?? rawData.Name ?? "",
       images: {
-        primarySmall: rawData.images?.primarySmall ?? rawData.Images?.PrimarySmall ?? "",
-        primaryMedium: rawData.images?.primaryMedium ?? rawData.Images?.PrimaryMedium ?? "",
-        primaryLarge: rawData.images?.primaryLarge ?? rawData.Images?.PrimaryLarge ?? "",
-        primaryExtraLarge: rawData.images?.primaryExtraLarge ?? rawData.Images?.PrimaryExtraLarge ?? "",
+        primarySmall: rawData.images?.primarySmall ?? rawData.Images?.PrimarySmall ?? rawData.image ?? rawData.Image ?? "",
+        primaryMedium: rawData.images?.primaryMedium ?? rawData.Images?.PrimaryMedium ?? rawData.image ?? rawData.Image ?? "",
+        primaryLarge: rawData.images?.primaryLarge ?? rawData.Images?.PrimaryLarge ?? rawData.image ?? rawData.Image ?? "",
+        primaryExtraLarge: rawData.images?.primaryExtraLarge ?? rawData.Images?.PrimaryExtraLarge ?? rawData.image ?? rawData.Image ?? "",
         extraImages: rawData.images?.extraImages ?? rawData.Images?.ExtraImages ?? []
       },
       sizesAvailable: rawData.sizesAvailable ?? rawData.SizesAvailable ?? { zipper: [] },

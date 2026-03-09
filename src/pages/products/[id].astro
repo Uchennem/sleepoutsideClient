@@ -100,10 +100,18 @@ const carouselImages = [
     alt: img.Title ?? img.title ?? nameWithoutBrand
   })) : [])
 ];
+// Safely serialize product data for embedding in a script element:
+// Unicode-escape < and > so the HTML parser never sees </script> sequences
+// while still producing valid JSON that JSON.parse decodes correctly.
+// (set:text cannot be used here because script elements are raw-text elements
+// and HTML entities inside them are NOT decoded via textContent.)
+const safeJsonData = hasProduct
+  ? JSON.stringify(data).replace(/</g, "\\u003C").replace(/>/g, "\\u003E")
+  : null;
 ---
 <Layout title = {title} breadcrumb={breadcrumb} showBreadcrumb={Boolean(breadcrumb)}>
-    {hasProduct && (
-      <script type="application/json" id="product-data" set:html={JSON.stringify(data)}></script>
+    {safeJsonData && (
+      <script type="application/json" id="product-data" set:html={safeJsonData}></script>
     )}
     <script src="../../js/product.ts"></script>
   
