@@ -8,6 +8,7 @@
 
   export let images: ImageData[] = [];
   let currentIndex = 0;
+  let showCarousel = false;
 
   function nextImage() {
     currentIndex = (currentIndex + 1) % images.length;
@@ -32,15 +33,20 @@
   $: showCarousel = images.length > 1;
 </script>
 
-<svelte:window on:keydown={handleKeydown} />
-
-<div class="image-carousel">
+<div
+  class="image-carousel"
+  role="region"
+  aria-label="Product image carousel"
+  tabindex="0"
+  onkeydown={handleKeydown}
+>
   {#if images.length > 0}
     <div class="carousel-main">
       {#if showCarousel}
         <button 
+          type="button"
           class="carousel-btn carousel-btn-prev" 
-          on:click={prevImage}
+          onclick={prevImage}
           aria-label="Previous image"
         >
           ‹
@@ -57,8 +63,9 @@
 
       {#if showCarousel}
         <button 
+          type="button"
           class="carousel-btn carousel-btn-next" 
-          on:click={nextImage}
+          onclick={nextImage}
           aria-label="Next image"
         >
           ›
@@ -70,9 +77,10 @@
       <div class="carousel-thumbnails">
         {#each images as image, index}
           <button
+            type="button"
             class="thumbnail-btn"
             class:active={currentIndex === index}
-            on:click={() => goToImage(index)}
+            onclick={() => goToImage(index)}
             aria-label={`View image ${index + 1}`}
           >
             <img

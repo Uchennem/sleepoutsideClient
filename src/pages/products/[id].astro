@@ -4,9 +4,7 @@ import ImageCarousel from "../../components/ImageCarousel.svelte";
 
 // map through all products to create a page for each one
 export async function getStaticPaths() {
-  // @ts-ignore - Node built-ins are available at Astro build time
   const { readFile } = await import("fs/promises");
-  // @ts-ignore - Node built-ins are available at Astro build time
   const { fileURLToPath } = await import("url");
   const productDataFiles = ["tents.json", "backpacks.json", "sleeping-bags.json"];
 
@@ -86,6 +84,14 @@ function formatCategoryLabel(value: string) {
 const category = data?.category ?? data?.Category ?? "";
 const breadcrumb = category ? formatCategoryLabel(category) : "";
 
+// Escape JSON for safe embedding in HTML to prevent XSS via </script> injection
+const safeProductJson = hasProduct
+  ? JSON.stringify(data)
+      .replace(/&/g, "\\u0026")
+      .replace(/</g, "\\u003c")
+      .replace(/>/g, "\\u003e")
+  : null;
+
 // Extract extra images for carousel
 const extraImages = data?.images?.extraImages ?? data?.Images?.ExtraImages ?? [];
 const carouselImages = [
@@ -103,7 +109,7 @@ const carouselImages = [
 ---
 <Layout title = {title} breadcrumb={breadcrumb} showBreadcrumb={Boolean(breadcrumb)}>
     {hasProduct && (
-      <script type="application/json" id="product-data" set:html={JSON.stringify(data)}></script>
+      <script type="application/json" id="product-data" set:html={safeProductJson}></script>
     )}
     <script src="../../js/product.ts"></script>
   
