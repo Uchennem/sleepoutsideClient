@@ -16,12 +16,6 @@ function showProductError(message: string) {
   errorEl.textContent = message;
 }
 
-function showCartMessage(message: string) {
-  let messageEl = document.querySelector(".cart-toast") as HTMLDivElement | null;
-
-  if (!messageEl) {
-    messageEl = document.createElement("div");
-    messageEl.className = "cart-toast";
 function showProductMessage(message: string) {
   let messageEl = document.querySelector(".product-toast") as HTMLDivElement | null;
   if (!messageEl) {
@@ -76,15 +70,8 @@ function setWishlistItems(items: Product[]) {
 function getProductData(): Product | null {
   const productDataEl = document.getElementById("product-data");
   if (!productDataEl) return null;
-
-function getProductData(): Product | null {
-  const productDataEl = document.getElementById("product-data");
-  if (!productDataEl) return null;
   
   try {
-    const rawData = JSON.parse(productDataEl.textContent || "{}");
-    
-    // Normalize the product data to match the Product type
     const rawData = JSON.parse(productDataEl.textContent || "{}") as any;
     const normalized: Product = {
       _id: rawData._id ?? rawData.Id ?? rawData.id,
@@ -115,17 +102,6 @@ function getProductData(): Product | null {
       listPrice: rawData.listPrice ?? rawData.ListPrice ?? 0,
       finalPrice: rawData.finalPrice ?? rawData.FinalPrice ?? 0
     };
-    
-      brand: rawData.brand ?? rawData.Brand ?? {
-        id: "",
-        url: "",
-        productsUrl: "",
-        logoSrc: "",
-        name: ""
-      },
-      listPrice: rawData.listPrice ?? rawData.ListPrice ?? 0,
-      finalPrice: rawData.finalPrice ?? rawData.FinalPrice ?? 0
-    };
 
     return normalized;
   } catch {
@@ -133,11 +109,6 @@ function getProductData(): Product | null {
   }
 }
 
-// add to cart button event handler
-function addToCartHandler(e: Event) {
-  const productData = getProductData();
-  
-  if (!productData) {
 function updateWishlistButtonState(productId: string) {
   const wishlistButton = document.getElementById("addToWishlist") as HTMLButtonElement | null;
   if (!wishlistButton) return;
@@ -169,9 +140,6 @@ function addToCartHandler() {
     return;
   }
 
-  addProductToCart(productData);
-  animateCartIcon();
-  showCartMessage(`${productData.name} added to cart`);
   addProductToCart(product);
   animateCartIcon();
   showProductMessage(`${product.name} added to cart`);
