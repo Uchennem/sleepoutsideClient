@@ -22,6 +22,11 @@ function showCartMessage(message: string) {
   if (!messageEl) {
     messageEl = document.createElement("div");
     messageEl.className = "cart-toast";
+function showProductMessage(message: string) {
+  let messageEl = document.querySelector(".product-toast") as HTMLDivElement | null;
+  if (!messageEl) {
+    messageEl = document.createElement("div");
+    messageEl.className = "product-toast";
     messageEl.setAttribute("role", "status");
     messageEl.setAttribute("aria-live", "polite");
     document.body.appendChild(messageEl);
@@ -53,6 +58,25 @@ function addProductToCart(product: Product) {
   setLocalStorage("so-cart", cart);
 }
 
+function getWishlistStorageKey() {
+  const authData = getLocalStorage("so-user") as any;
+  const userId = authData?.isLoggedIn ? authData?.user?._id : null;
+  return userId ? `so-wishlist-${userId}` : "so-wishlist";
+}
+
+function getWishlistItems(): Product[] {
+  const data = getLocalStorage(getWishlistStorageKey());
+  return Array.isArray(data) ? data : [];
+}
+
+function setWishlistItems(items: Product[]) {
+  setLocalStorage(getWishlistStorageKey(), items);
+}
+
+function getProductData(): Product | null {
+  const productDataEl = document.getElementById("product-data");
+  if (!productDataEl) return null;
+
 function getProductData(): Product | null {
   const productDataEl = document.getElementById("product-data");
   if (!productDataEl) return null;
@@ -61,6 +85,7 @@ function getProductData(): Product | null {
     const rawData = JSON.parse(productDataEl.textContent || "{}");
     
     // Normalize the product data to match the Product type
+    const rawData = JSON.parse(productDataEl.textContent || "{}") as any;
     const normalized: Product = {
       _id: rawData._id ?? rawData.Id ?? rawData.id,
       id: rawData.id ?? rawData.Id,
@@ -91,6 +116,17 @@ function getProductData(): Product | null {
       finalPrice: rawData.finalPrice ?? rawData.FinalPrice ?? 0
     };
     
+      brand: rawData.brand ?? rawData.Brand ?? {
+        id: "",
+        url: "",
+        productsUrl: "",
+        logoSrc: "",
+        name: ""
+      },
+      listPrice: rawData.listPrice ?? rawData.ListPrice ?? 0,
+      finalPrice: rawData.finalPrice ?? rawData.FinalPrice ?? 0
+    };
+
     return normalized;
   } catch {
     return null;
@@ -102,6 +138,33 @@ function addToCartHandler(e: Event) {
   const productData = getProductData();
   
   if (!productData) {
+function updateWishlistButtonState(productId: string) {
+  const wishlistButton = document.getElementById("addToWishlist") as HTMLButtonElement | null;
+  if (!wishlistButton) return;
+
+  const wishlistItems = getWishlistItems();
+  const inWishlist = wishlistItems.some((item) => item.id === productId);
+  wishlistButton.textContent = inWishlist ? "Remove from Wishlist" : "Add to Wishlist";
+}
+
+function toggleWishlist(product: Product) {
+  const wishlistItems = getWishlistItems();
+  const existingIndex = wishlistItems.findIndex((item) => item.id === product.id);
+
+  if (existingIndex >= 0) {
+    wishlistItems.splice(existingIndex, 1);
+    setWishlistItems(wishlistItems);
+    return false;
+  }
+
+  wishlistItems.push(product);
+  setWishlistItems(wishlistItems);
+  return true;
+}
+
+function addToCartHandler() {
+  const product = getProductData();
+  if (!product) {
     showProductError("Product not found. Unable to add to cart.");
     return;
   }
@@ -109,9 +172,33 @@ function addToCartHandler(e: Event) {
   addProductToCart(productData);
   animateCartIcon();
   showCartMessage(`${productData.name} added to cart`);
+  addProductToCart(product);
+  animateCartIcon();
+  showProductMessage(`${product.name} added to cart`);
+}
+
+function wishlistHandler() {
+  const product = getProductData();
+  if (!product) {
+    showProductError("Product not found. Unable to update wishlist.");
+    return;
+  }
+
+  const wasAdded = toggleWishlist(product);
+  updateWishlistButtonState(product.id);
+  showProductMessage(wasAdded ? `${product.name} added to wishlist` : `${product.name} removed from wishlist`);
 }
 
 // add listener to Add to Cart button
 document
   .getElementById("addToCart")
   ?.addEventListener("click", addToCartHandler);
+
+document
+  .getElementById("addToWishlist")
+  ?.addEventListener("click", wishlistHandler);
+
+const currentProduct = getProductData();
+if (currentProduct?.id) {
+  updateWishlistButtonState(currentProduct.id);
+}
