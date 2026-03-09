@@ -4,9 +4,7 @@ import ImageCarousel from "../../components/ImageCarousel.svelte";
 
 // map through all products to create a page for each one
 export async function getStaticPaths() {
-  // @ts-ignore - Node built-ins are available at Astro build time
   const { readFile } = await import("fs/promises");
-  // @ts-ignore - Node built-ins are available at Astro build time
   const { fileURLToPath } = await import("url");
   const productDataFiles = ["tents.json", "backpacks.json", "sleeping-bags.json"];
 
@@ -100,10 +98,15 @@ const carouselImages = [
     alt: img.Title ?? img.title ?? nameWithoutBrand
   })) : [])
 ];
+// Safely serialize product data: Unicode-escape < and > so the HTML parser
+// never sees a </script> sequence inside this raw-text element.
+const safeProductJson = hasProduct
+  ? JSON.stringify(data).replace(/</g, "\\u003C").replace(/>/g, "\\u003E")
+  : null;
 ---
 <Layout title = {title} breadcrumb={breadcrumb} showBreadcrumb={Boolean(breadcrumb)}>
-    {hasProduct && (
-      <script type="application/json" id="product-data" set:html={JSON.stringify(data)}></script>
+    {safeProductJson && (
+      <script type="application/json" id="product-data" set:html={safeProductJson}></script>
     )}
     <script src="../../js/product.ts"></script>
   

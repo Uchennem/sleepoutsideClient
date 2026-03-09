@@ -1,5 +1,5 @@
 import type { Product } from "./types.mts";
-import { setLocalStorage, getLocalStorage } from "./utils.mts";
+import { setLocalStorage, getLocalStorage, getWishlistStorageKey, getWishlistItems, setWishlistItems } from "./utils.mts";
 
 function showProductError(message: string) {
   const detailSection = document.querySelector(".product-detail");
@@ -50,21 +50,6 @@ function addProductToCart(product: Product) {
   const cart = Array.isArray(cartData) ? cartData : [];
   cart.push(product);
   setLocalStorage("so-cart", cart);
-}
-
-function getWishlistStorageKey() {
-  const authData = getLocalStorage("so-user") as any;
-  const userId = authData?.isLoggedIn ? authData?.user?._id : null;
-  return userId ? `so-wishlist-${userId}` : "so-wishlist";
-}
-
-function getWishlistItems(): Product[] {
-  const data = getLocalStorage(getWishlistStorageKey());
-  return Array.isArray(data) ? data : [];
-}
-
-function setWishlistItems(items: Product[]) {
-  setLocalStorage(getWishlistStorageKey(), items);
 }
 
 function getProductData(): Product | null {
