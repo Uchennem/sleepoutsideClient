@@ -170,6 +170,10 @@ button {
 .link-style-button:hover {
   text-decoration: underline;
 }
+
+.hide {
+  display: none;
+}
 /* End utility classes */
 
 /* Cart icon styles */
@@ -469,6 +473,16 @@ button {
   padding: 0.3em 0.7em;
   font-size: var(--small-font);
   margin: 0;
+}
+
+.cart-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1em;
+}
+
+.cart-total {
+  font-weight: 700;
 }
 
 @media screen and (min-width: 500px) {
