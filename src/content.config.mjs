@@ -6,7 +6,7 @@ import { glob, file } from "astro/loaders"; // Not available with legacy API
 //   loader: glob({ pattern: "**/*.md", base: "./src/content/blog" })
 // });
 
-// load our product info from category json files
+// load our product info from tents.json
 const products = defineCollection({
   loader: file("public/json/tents.json")
 });

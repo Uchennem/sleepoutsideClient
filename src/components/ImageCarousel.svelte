@@ -8,12 +8,16 @@
 
   export let images: ImageData[] = [];
   let currentIndex = 0;
+  let showCarousel = false;
+  $: showCarousel = images.length > 1;
 
   function nextImage() {
+    if (images.length < 2) return;
     currentIndex = (currentIndex + 1) % images.length;
   }
 
   function prevImage() {
+    if (images.length < 2) return;
     currentIndex = (currentIndex - 1 + images.length) % images.length;
   }
 
@@ -28,19 +32,16 @@
       nextImage();
     }
   }
-
-  $: showCarousel = images.length > 1;
 </script>
 
-<svelte:window on:keydown={handleKeydown} />
-
-<div class="image-carousel">
+<!-- svelte-ignore a11y-no-noninteractive-element-to-interactive-role -->
+<div class="image-carousel" role="region" aria-label="Product image carousel" tabindex="0" onkeydown={handleKeydown}>
   {#if images.length > 0}
     <div class="carousel-main">
       {#if showCarousel}
         <button 
           class="carousel-btn carousel-btn-prev" 
-          on:click={prevImage}
+          onclick={prevImage}
           aria-label="Previous image"
         >
           ‹
@@ -58,7 +59,7 @@
       {#if showCarousel}
         <button 
           class="carousel-btn carousel-btn-next" 
-          on:click={nextImage}
+          onclick={nextImage}
           aria-label="Next image"
         >
           ›
@@ -72,7 +73,7 @@
           <button
             class="thumbnail-btn"
             class:active={currentIndex === index}
-            on:click={() => goToImage(index)}
+            onclick={() => goToImage(index)}
             aria-label={`View image ${index + 1}`}
           >
             <img
@@ -93,6 +94,12 @@
 <style>
   .image-carousel {
     width: 100%;
+    outline: none;
+  }
+
+  .image-carousel:focus-visible {
+    outline: 2px solid var(--primary-color, #007bff);
+    outline-offset: 2px;
   }
 
   .carousel-main {

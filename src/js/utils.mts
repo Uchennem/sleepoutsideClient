@@ -1,3 +1,5 @@
+import type { Product } from "./types.mts";
+
 // wrapper for querySelector...returns matching element
 export function qs(selector:string, parent = document) {
   return parent.querySelector(selector);
@@ -23,6 +25,27 @@ export function setLocalStorage(key:string, data:any) {
     window.dispatchEvent(new CustomEvent("so-cart-updated"));
   }
 }
+
+// wishlist storage helpers
+export function getWishlistStorageKey(): string {
+  const authData = getLocalStorage("so-user") as any;
+  const userId = authData?.isLoggedIn ? authData?.user?._id : null;
+  return userId ? `so-wishlist-${userId}` : "so-wishlist";
+}
+
+export function getWishlistItems(): Product[] {
+  const data = getLocalStorage(getWishlistStorageKey());
+  return Array.isArray(data) ? data : [];
+}
+
+export function setWishlistItems(items: Product[]): void {
+  setLocalStorage(getWishlistStorageKey(), items);
+}
+
+export function getItemColor(item: Product): string {
+  return item.colors?.[0]?.colorName ?? "N/A";
+}
+
 // set a listener for both touchend and click
 interface ClickHandler {
   (e:Event):void;
