@@ -1,24 +1,5 @@
-import { getLocalStorage, setLocalStorage } from "./utils.mts";
+import { getLocalStorage, setLocalStorage, getWishlistItems, setWishlistItems, getItemColor } from "./utils.mts";
 import type { Product } from "./types.mts";
-
-function getWishlistStorageKey() {
-  const authData = getLocalStorage("so-user") as any;
-  const userId = authData?.isLoggedIn ? authData?.user?._id : null;
-  return userId ? `so-wishlist-${userId}` : "so-wishlist";
-}
-
-function getWishlistItems() {
-  const data = getLocalStorage(getWishlistStorageKey());
-  return Array.isArray(data) ? (data as Product[]) : [];
-}
-
-function setWishlistItems(items: Product[]) {
-  setLocalStorage(getWishlistStorageKey(), items);
-}
-
-function getItemColor(item: Product) {
-  return item.colors?.[0]?.colorName ?? "N/A";
-}
 
 function renderWishlistContents() {
   const wishlistEl = document.querySelector(".wishlist-list") as HTMLElement | null;

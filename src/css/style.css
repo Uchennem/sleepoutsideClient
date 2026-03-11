@@ -372,7 +372,6 @@ button {
   font-weight: 600;
 }
 
-.cart-toast {
 .product-detail__actions {
   display: flex;
   gap: 0.75em;
@@ -404,7 +403,6 @@ button {
   z-index: 1000;
 }
 
-.cart-toast.show {
 .product-toast.show {
   opacity: 1;
   transform: translateY(0);
