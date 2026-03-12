@@ -1,12 +1,22 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import CheckoutForm from "../../js/components/CheckoutForm.svelte";
 const title = "Checkout";
 ---
 
 <Layout title={title}>
-
-    <section class="products">
+    <section class="products checkout-page">
         <h2>Review & Place your Order</h2>
+        <CheckoutForm client:load />
     </section>
-
 </Layout>
+
+<script>
+    import { checkAuth } from "../../js/auth.svelte.ts";
+    
+    // Check authentication on page load
+    if (!checkAuth()) {
+        const returnUrl = encodeURIComponent(window.location.pathname);
+        window.location.href = `/login?returnUrl=${returnUrl}`;
+    }
+</script>
