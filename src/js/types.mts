@@ -47,3 +47,45 @@ export interface Product {
   listPrice: number;
   finalPrice: number;
 }
+
+export interface OrderItem {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+}
+
+export interface CheckoutFormData {
+  fname: string;
+  lname: string;
+  street: string;
+  city: string;
+  state: string;
+  zip: string;
+  cardNumber: string;
+  expiration: string;
+  code: string;
+}
+
+export interface Order {
+  items: OrderItem[];
+  orderDate: string;
+  fname: string;
+  lname: string;
+  street: string;
+  city: string;
+  state: string;
+  zip: string;
+  cardNumber: string;
+  expiration: string;
+  code: string;
+  orderTotal: number;
+  tax: number;
+  shipping: number;
+  userId: string;
+}
+
+export interface OrderResponse {
+  _id: string;
+  message?: string;
+}
