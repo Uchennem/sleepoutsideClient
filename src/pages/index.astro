@@ -1,5 +1,4 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
 
 const title = "Home"
@@ -28,6 +27,20 @@ const title = "Home"
 		mission is to provide you with everything you need to do this
 		comfortably at an affordable price.
 	</p>
+	</section>
+	<section class="newsletter">
+	<h2>Join Our Newsletter</h2>
+	<p>Get camping tips, product updates, and special offers.</p>
+	<form id="newsletter-form" class="newsletter__form">
+		<label for="newsletter-name">Name</label>
+		<input id="newsletter-name" name="name" type="text" required />
+
+		<label for="newsletter-email">Email</label>
+		<input id="newsletter-email" name="email" type="email" required />
+
+		<button type="submit">Sign Up</button>
+	</form>
+	<p id="newsletter-message" class="newsletter__message hide"></p>
 	</section>
 	<section class="categories">
 	<h2>Shop by Category</h2>

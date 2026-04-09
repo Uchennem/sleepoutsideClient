@@ -66,7 +66,17 @@ const imageExtraLarge =
   data?.Images?.PrimaryExtraLarge ??
   imageLarge;
 const displayPrice = data?.finalPrice ?? data?.FinalPrice ?? data?.price ?? data?.ListPrice ?? "Price TBA";
-const colorName = data?.colors?.[0]?.colorName ?? data?.Colors?.[0]?.ColorName ?? data?.color ?? data?.Color ?? "";
+
+const rawColors = data?.colors ?? data?.Colors ?? [];
+const colorOptions = Array.isArray(rawColors)
+  ? rawColors.map((color: any) => ({
+      colorCode: color?.colorCode ?? color?.ColorCode ?? "",
+      colorName: color?.colorName ?? color?.ColorName ?? "",
+      colorChipImageSrc: color?.colorChipImageSrc ?? color?.ColorChipImageSrc ?? "",
+      colorPreviewImageSrc: color?.colorPreviewImageSrc ?? color?.ColorPreviewImageSrc ?? ""
+    }))
+  : [];
+const colorName = colorOptions[0]?.colorName ?? data?.color ?? data?.Color ?? "";
 const description =
   data?.descriptionHtmlSimple ??
   data?.DescriptionHtmlSimple ??
@@ -122,7 +132,29 @@ const safeProductJson = hasProduct
 
     <p class="product-card__price">{displayPrice}</p>
 
-    <p class="product__color">{colorName}</p>
+    {colorOptions.length > 1 ? (
+      <div class="product-colors">
+        <p class="product__color-label">
+          Color: <span id="selected-color-name">{colorOptions[0].colorName}</span>
+        </p>
+        <div class="product-color-options">
+          {colorOptions.map((color, index) => (
+            <label class="product-color-option">
+              <input
+                type="radio"
+                name="product-color"
+                value={index}
+                checked={index === 0}
+              />
+              <img src={color.colorChipImageSrc} alt={`${color.colorName} swatch`} />
+              <span>{color.colorName}</span>
+            </label>
+          ))}
+        </div>
+      </div>
+    ) : (
+      <p class="product__color">{colorName}</p>
+    )}
 
     <p class="product__description" set:html={description}>
         
@@ -132,6 +164,16 @@ const safeProductJson = hasProduct
       <button id="addToCart" data-id={productId}>Add to Cart</button>
       <button id="addToWishlist" class="wishlist-button" data-id={productId}>Add to Wishlist</button>
     </div>
+
+    <section class="product-reviews">
+      <h3>Customer Reviews</h3>
+      <form id="review-form" class="review-form">
+        <label for="review-comment">Leave a comment</label>
+        <textarea id="review-comment" name="comment" rows="3" required></textarea>
+        <button type="submit">Add Review</button>
+      </form>
+      <ul id="review-list" class="review-list"></ul>
+    </section>
       </>
     ) : (
       <>

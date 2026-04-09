@@ -1,5 +1,6 @@
 import { getData } from "./productData.mts";
 import { getParam } from "./utils.mts";
+import { renderAlerts } from "./alerts";
 
 function formatCategoryLabel(value: string) {
   return value
@@ -35,6 +36,14 @@ function getItemPrice(item: any) {
   return item.finalPrice ?? item.FinalPrice ?? item.price ?? item.ListPrice ?? "Price TBA";
 }
 
+function getItemPriceNumber(item: any) {
+  const rawPrice = getItemPrice(item);
+  if (typeof rawPrice === "number") return rawPrice;
+
+  const parsed = Number(String(rawPrice).replace(/[^0-9.]/g, ""));
+  return Number.isFinite(parsed) ? parsed : Number.MAX_SAFE_INTEGER;
+}
+
 function productCardTemplate(item: any) {
   const id = getItemId(item);
   const image = getItemImage(item);
@@ -52,12 +61,31 @@ function productCardTemplate(item: any) {
 </li>`;
 }
 
+function sortProducts(products: any[], sortValue: string) {
+  const sorted = [...products];
+
+  if (sortValue === "name") {
+    sorted.sort((a, b) => getItemName(a).localeCompare(getItemName(b)));
+    return sorted;
+  }
+
+  if (sortValue === "price") {
+    sorted.sort((a, b) => getItemPriceNumber(a) - getItemPriceNumber(b));
+    return sorted;
+  }
+
+  return sorted;
+}
+
 async function initProductListPage() {
+  await renderAlerts();
+
   const category = getParam("category") || "tents";
   const categoryLabel = formatCategoryLabel(category);
   const breadcrumbEl = document.querySelector(".breadcrumb") as HTMLElement | null;
   const headingEl = document.querySelector(".products h2") as HTMLElement | null;
   const listEl = document.querySelector(".product-list") as HTMLElement | null;
+  const sortEl = document.getElementById("product-sort") as HTMLSelectElement | null;
 
   if (headingEl) {
     headingEl.textContent = `Top Products: ${categoryLabel}`;
@@ -78,7 +106,18 @@ async function initProductListPage() {
       return;
     }
 
-    listEl.innerHTML = products.map(productCardTemplate).join("");
+    const renderProducts = (sortValue = "default") => {
+      const sortedProducts = sortProducts(products, sortValue);
+      listEl.innerHTML = sortedProducts.map(productCardTemplate).join("");
+    };
+
+    renderProducts(sortEl?.value ?? "default");
+
+    if (sortEl) {
+      sortEl.addEventListener("change", () => {
+        renderProducts(sortEl.value);
+      });
+    }
   } catch {
     if (breadcrumbEl) {
       breadcrumbEl.textContent = `${categoryLabel}->(0 items)`;

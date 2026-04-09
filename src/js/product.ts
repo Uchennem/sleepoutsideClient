@@ -52,6 +52,15 @@ function addProductToCart(product: Product) {
   setLocalStorage("so-cart", cart);
 }
 
+function normalizeColor(color: any) {
+  return {
+    colorCode: color?.colorCode ?? color?.ColorCode ?? "",
+    colorName: color?.colorName ?? color?.ColorName ?? "",
+    colorChipImageSrc: color?.colorChipImageSrc ?? color?.ColorChipImageSrc ?? "",
+    colorPreviewImageSrc: color?.colorPreviewImageSrc ?? color?.ColorPreviewImageSrc ?? ""
+  };
+}
+
 function getProductData(): Product | null {
   const productDataEl = document.getElementById("product-data");
   if (!productDataEl) return null;
@@ -80,7 +89,9 @@ function getProductData(): Product | null {
         extraImages: rawData.images?.extraImages ?? rawData.Images?.ExtraImages ?? []
       },
       sizesAvailable: rawData.sizesAvailable ?? rawData.SizesAvailable ?? { zipper: [] },
-      colors: rawData.colors ?? rawData.Colors ?? [],
+      colors: (Array.isArray(rawData.colors ?? rawData.Colors)
+        ? (rawData.colors ?? rawData.Colors).map(normalizeColor)
+        : []),
       descriptionHtmlSimple: rawData.descriptionHtmlSimple ?? rawData.DescriptionHtmlSimple ?? "",
       suggestedRetailPrice: rawData.suggestedRetailPrice ?? rawData.SuggestedRetailPrice ?? 0,
       brand: rawData.brand ?? rawData.Brand ?? { id: "", url: "", productsUrl: "", logoSrc: "", name: "" },
@@ -118,8 +129,124 @@ function toggleWishlist(product: Product) {
   return true;
 }
 
+function getSelectedColorIndex() {
+  const checkedColorInput = document.querySelector("input[name='product-color']:checked") as HTMLInputElement | null;
+  if (!checkedColorInput) return 0;
+
+  const selectedIndex = Number(checkedColorInput.value);
+  return Number.isNaN(selectedIndex) ? 0 : selectedIndex;
+}
+
+function getSelectedProduct(product: Product) {
+  if (!Array.isArray(product.colors) || product.colors.length === 0) return product;
+
+  const colorIndex = getSelectedColorIndex();
+  const selectedColor = product.colors[colorIndex] ?? product.colors[0];
+  if (!selectedColor) return product;
+
+  return {
+    ...product,
+    colors: [selectedColor],
+    images: {
+      ...product.images,
+      primaryMedium: selectedColor.colorPreviewImageSrc || product.images.primaryMedium,
+      primarySmall: selectedColor.colorPreviewImageSrc || product.images.primarySmall
+    }
+  };
+}
+
+function setupColorSelection() {
+  const colorOptions = document.querySelector(".product-color-options");
+  const selectedColorNameEl = document.getElementById("selected-color-name");
+  if (!colorOptions || !selectedColorNameEl) return;
+
+  colorOptions.addEventListener("change", () => {
+    const product = getProductData();
+    if (!product?.colors?.length) return;
+
+    const selectedIndex = getSelectedColorIndex();
+    const selectedColor = product.colors[selectedIndex] ?? product.colors[0];
+    if (!selectedColor) return;
+
+    selectedColorNameEl.textContent = selectedColor.colorName;
+  });
+}
+
+type ProductReview = {
+  comment: string;
+  createdAt: string;
+};
+
+function getReviewsStorageKey(productId: string) {
+  return `so-reviews-${productId}`;
+}
+
+function getProductReviews(productId: string): ProductReview[] {
+  const reviewsData = getLocalStorage(getReviewsStorageKey(productId));
+  return Array.isArray(reviewsData) ? reviewsData : [];
+}
+
+function saveProductReviews(productId: string, reviews: ProductReview[]) {
+  localStorage.setItem(getReviewsStorageKey(productId), JSON.stringify(reviews));
+}
+
+function renderProductReviews(productId: string) {
+  const reviewList = document.getElementById("review-list") as HTMLUListElement | null;
+  if (!reviewList) return;
+
+  const reviews = getProductReviews(productId);
+  reviewList.innerHTML = "";
+
+  if (reviews.length === 0) {
+    const emptyItem = document.createElement("li");
+    emptyItem.className = "review-list__empty";
+    emptyItem.textContent = "No reviews yet. Be the first to comment.";
+    reviewList.appendChild(emptyItem);
+    return;
+  }
+
+  reviews.forEach((review) => {
+    const item = document.createElement("li");
+    item.className = "review-item";
+
+    const commentEl = document.createElement("p");
+    commentEl.textContent = review.comment;
+
+    const dateEl = document.createElement("small");
+    dateEl.textContent = new Date(review.createdAt).toLocaleString();
+
+    item.appendChild(commentEl);
+    item.appendChild(dateEl);
+    reviewList.appendChild(item);
+  });
+}
+
+function setupReviewForm(productId: string) {
+  const form = document.getElementById("review-form") as HTMLFormElement | null;
+  if (!form) return;
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(form);
+    const comment = String(formData.get("comment") ?? "").trim();
+    if (!comment) return;
+
+    const reviews = getProductReviews(productId);
+    reviews.unshift({
+      comment,
+      createdAt: new Date().toISOString()
+    });
+
+    saveProductReviews(productId, reviews);
+    form.reset();
+    renderProductReviews(productId);
+  });
+}
+
 function addToCartHandler() {
-  const product = getProductData();
+  const productData = getProductData();
+  const product = productData ? getSelectedProduct(productData) : null;
   if (!product) {
     showProductError("Product not found. Unable to add to cart.");
     return;
@@ -131,7 +258,8 @@ function addToCartHandler() {
 }
 
 function wishlistHandler() {
-  const product = getProductData();
+  const productData = getProductData();
+  const product = productData ? getSelectedProduct(productData) : null;
   if (!product) {
     showProductError("Product not found. Unable to update wishlist.");
     return;
@@ -154,4 +282,8 @@ document
 const currentProduct = getProductData();
 if (currentProduct?.id) {
   updateWishlistButtonState(currentProduct.id);
+  renderProductReviews(currentProduct.id);
+  setupReviewForm(currentProduct.id);
 }
+
+setupColorSelection();
