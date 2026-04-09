@@ -7,6 +7,14 @@ const title = "Product List";
 <Layout title={title} showBreadcrumb={true}>
   <section class="products">
     <h2>Top Products</h2>
+    <div class="product-list-toolbar">
+      <label for="product-sort">Sort by:</label>
+      <select id="product-sort" name="product-sort">
+        <option value="default">Default</option>
+        <option value="name">Name (A-Z)</option>
+        <option value="price">Price (Low to High)</option>
+      </select>
+    </div>
     <ul class="product-list"></ul>
   </section>
 
